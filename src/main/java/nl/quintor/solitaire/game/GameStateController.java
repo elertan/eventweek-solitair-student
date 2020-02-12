@@ -1,8 +1,8 @@
 package nl.quintor.solitaire.game;
 
 import nl.quintor.solitaire.models.deck.Deck;
-import nl.quintor.solitaire.models.deck.DeckType;
 import nl.quintor.solitaire.models.state.GameState;
+
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -60,5 +60,11 @@ public class GameStateController {
      */
     public static void detectGameWin(GameState gameState){
         // TODO: Write implementation
+        boolean foundInvisibleCards = gameState.getColumns().values().stream().anyMatch(d -> (d.getInvisibleCards() > 0));
+
+        if(!foundInvisibleCards && gameState.getStock().isEmpty()){
+            gameState.setGameWon(true);
+        }
+
     }
 }
