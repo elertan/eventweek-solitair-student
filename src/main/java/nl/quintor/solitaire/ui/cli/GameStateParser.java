@@ -1,9 +1,39 @@
 package nl.quintor.solitaire.ui.cli;
 
+import nl.quintor.solitaire.models.card.Card;
 import nl.quintor.solitaire.models.deck.Deck;
 import nl.quintor.solitaire.models.state.GameState;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+class RowType {
+
+    private boolean _isHidden;
+    private Card _card;
+
+    public RowType(boolean isHidden) {
+        this._isHidden = isHidden;
+    }
+    public RowType(Card card) {
+        this._card = card;
+    }
+
+    public boolean isNoCard() {
+        return _card == null && !_isHidden;
+    }
+
+    public boolean isHidden() {
+        return _card == null && _isHidden;
+    }
+
+    public boolean isCard() {
+        return _card != null;
+    }
+}
 
 /**
  * {@link GameState} parser for terminal printing. The class is not instantiable, all constructors are private.
@@ -57,7 +87,48 @@ class GameStateParser {
      */
     protected static boolean printRow(StringBuilder builder, Collection<Deck> columns, int row){
         // TODO: Write implementation
-        return true;
+
+        List<Integer> columnHeights = columns.stream().map(deck -> deck.size() + deck.getInvisibleCards()).collect(Collectors.toList());
+
+        columnHeights.sort(Integer::compareTo);
+
+        int heighestColumn = columnHeights.get(columnHeights.size() - 1);
+        ArrayList<ArrayList<RowType>> rows = new ArrayList<ArrayList<RowType>>();
+        IntStream.range(0,heighestColumn).forEach(i -> {
+            ArrayList<RowType> newRow = new ArrayList<RowType>();
+
+            columns.stream().forEach(deck -> {
+
+                int amountInvisible = deck.getInvisibleCards();
+                if ( i < amountInvisible ) {
+                    newRow.add(new RowType(true));
+                    return;
+                }
+                if (deck.size() > i) {
+                    newRow.add(new RowType(false));
+                    return;
+                }
+                Card card = deck.get(i);
+                newRow.add(new RowType(card));
+            });
+            rows.add(newRow);
+        });
+
+        rows.stream().forEach(singleRow -> {
+            singleRow.stream().forEach(rowType -> {
+                if (rowType.isNoCard()){
+
+                } else if (rowType.isHidden()) {
+
+                } else if (rowType.isCard()) {
+
+                }
+
+            });
+//            TODO: new line '\n'
+        });
+
+        return columns.stream().anyMatch(deck -> deck.size() > row);
     }
 
     /**

@@ -47,12 +47,12 @@ class GameStateParserSpec extends Specification {
             result == expectedResult
             builder.toString() == expectedBuilderContent
         where:
-            inputDecks | rowIndex || expectedResult |expectedBuilderContent | testCase
-            TestUtil.createTestColumnsCollections(0)|0||false|'                                                        '|'printing empty decks'
-            TestUtil.createTestColumnsCollections(1)|0||true |'♤ A     ♤ K     ♤ Q     ♤ J     ♤ 10    ♤ 9     ♤ 8     '|'printing decks containing only visible cards and one row'
-            TestUtil.createTestColumnsCollections(2)|1||true |'♤ 7     ♤ 6     ♤ 5     ♤ 4     ♤ 3     ♤ 2     ♥ A     '|'printing decks containing only visible cards and multiple rows'
-            TestUtil.createTestColumnsCollections(2)|9||false |'                                                        '|'printing decks containing only visible cards and multiple rows with non existing  index'
-            TestUtil.setInvisiblecards(TestUtil.createTestColumnsCollections(1), 1)|0||true |'? ?     ? ?     ? ?     ? ?     ? ?     ? ?     ? ?     '|'printing decks containing only invisible cards and one row'
+            inputDecks                                                              | rowIndex || expectedResult | expectedBuilderContent                                     | testCase
+            TestUtil.createTestColumnsCollections(0)                                | 0        || false          | '                                                        ' | 'printing empty decks'
+            TestUtil.createTestColumnsCollections(1)                                | 0        || true           | '♤ A     ♤ K     ♤ Q     ♤ J     ♤ 10    ♤ 9     ♤ 8   ' | 'printing decks containing only visible cards and one row'
+            TestUtil.createTestColumnsCollections(2)                                | 1        || true           | '♤ 7     ♤ 6     ♤ 5     ♤ 4     ♤ 3     ♤ 2     ♥ A   ' | 'printing decks containing only visible cards and multiple rows'
+            TestUtil.createTestColumnsCollections(2)                                | 9        || false          | '                                                        ' | 'printing decks containing only visible cards and multiple rows with non existing  index'
+            TestUtil.setInvisiblecards(TestUtil.createTestColumnsCollections(1), 1) | 0        || true           | '? ?     ? ?     ? ?     ? ?     ? ?     ? ?     ? ?     ' | 'printing decks containing only invisible cards and one row'
     }
 
     def "parseGameState should return a string representation of the game state for a new game" () {
