@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * Library class for GameState initiation and status checks that are called from {@link nl.quintor.solitaire.Main}.
@@ -49,6 +50,10 @@ public class GameStateController {
      */
     public static void applyBonusScore(GameState gameState){
         // TODO: Write implementation
+      long seconds = java.time.Duration.between(gameState.getStartTime(), gameState.getEndTime()).getSeconds();
+      if(seconds > 30){
+          gameState.setTimeScore(700000/seconds);
+      }
     }
 
     /**
