@@ -8,6 +8,9 @@ import nl.quintor.solitaire.models.card.Suit;
 import nl.quintor.solitaire.models.deck.Deck;
 import nl.quintor.solitaire.models.deck.DeckType;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Library class for card move legality checks. The class is not instantiable, all constructors are private and all methods are
  * static. The class contains several private helper methods. All methods throw {@link MoveException}s, which can
@@ -31,6 +34,32 @@ public class CardMoveChecks {
      */
     public static void checkPlayerInput(String[] input) throws MoveException{
         // TODO: Write implementation
+        if(input.length == 3){
+            String moveCommand = input[0];
+            String sourceLocation = input[1];
+            String destinationLocation = input[2];
+
+            if(moveCommand != "M") {
+                throw new MoveException("test");
+            }
+
+            String[] validSourceLocations = new String[] {"O", "A", "A2", "B", "C", "C10", "D", "E", "F", "G", "SA", "SB", "SC", "SD"};
+            List<String> sourceList = Arrays.asList(validSourceLocations);
+            if (!sourceList.contains(sourceLocation)) {
+                throw new MoveException("Invalid Move syntax. \"Z\" is not a valid source location.\n" +
+                    "See H̲elp for instructions.");
+            }
+
+            String[] validDestinationLocations = new String[] {"A", "B", "C", "D", "E", "F", "G", "SA", "SB", "SC", "SD"};
+            List<String> destinationList = Arrays.asList(validDestinationLocations);
+            if (!destinationList.contains(destinationLocation)){
+                throw new MoveException("Invalid Move syntax. \"Z\" is not a valid destination location.\n" +
+                    "See H̲elp for instructions.");
+            }
+
+            return;
+        }
+        throw new MoveException("test");
     }
 
     /**
@@ -94,7 +123,13 @@ public class CardMoveChecks {
      * @return true if the cards are of different colors
      */
     static boolean opposingColor(Card card1, Card card2){
-        // TODO: Write implementation
+        boolean suitCard1 = redSuit(card1);
+        boolean suitCard2 = redSuit(card2);
+
+        if ((suitCard1 && suitCard2) || (!suitCard1 && !suitCard2)) {
+            return false;
+        }
+
         return true;
     }
 
