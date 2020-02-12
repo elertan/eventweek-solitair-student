@@ -83,7 +83,7 @@ public class CardMoveChecks {
         }
         else if( destinationDeck.getDeckType() == DeckType.STOCK){
             throw new MoveException("You can\'t move cards to the stock");
-        }else if (sourceDeck.size() != sourceCardIndex && sourceDeck.getInvisibleCards() == 0) {
+        }else if (sourceDeck.size() - sourceCardIndex > 1 && sourceDeck.getInvisibleCards() == 0 && destinationDeck.getDeckType() == DeckType.STACK) {
         throw new MoveException("You can't move more than 1 card at a time to a Stack Pile");
         }else if (sourceDeck.getInvisibleCards() > sourceCardIndex){
             throw new MoveException("You can't move an invisible card");
@@ -115,6 +115,7 @@ public class CardMoveChecks {
      */
     static void checkStackMove(Card targetCard, Card cardToAdd) throws MoveException {
         // TODO: Write implementation
+
     }
 
     /**
