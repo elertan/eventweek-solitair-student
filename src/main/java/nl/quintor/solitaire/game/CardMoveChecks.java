@@ -94,7 +94,13 @@ public class CardMoveChecks {
      * @return true if the cards are of different colors
      */
     static boolean opposingColor(Card card1, Card card2){
-        // TODO: Write implementation
+        boolean suitCard1 = redSuit(card1);
+        boolean suitCard2 = redSuit(card2);
+
+        if ((suitCard1 && suitCard2) || (!suitCard1 && !suitCard2)) {
+            return false;
+        }
+
         return true;
     }
 
