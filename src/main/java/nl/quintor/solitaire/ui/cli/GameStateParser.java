@@ -3,7 +3,10 @@ package nl.quintor.solitaire.ui.cli;
 import nl.quintor.solitaire.models.deck.Deck;
 import nl.quintor.solitaire.models.state.GameState;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@link GameState} parser for terminal printing. The class is not instantiable, all constructors are private.
@@ -68,8 +71,10 @@ class GameStateParser {
      * @return the requested card or null
      */
     protected static String getCardStringOrNull(Deck deck, int index){
-        // TODO: Write implementation
-        return null;
+        String cards = deck.toString().replace("[", "").replace("]", "");
+        String[] arrOfStr = cards.split(", ");
+        if (index < 1 || index > 52) { return null; }
+        return arrOfStr[index];
     }
 
     /**
