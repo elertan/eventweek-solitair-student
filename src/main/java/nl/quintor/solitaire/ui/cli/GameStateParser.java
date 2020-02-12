@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.Collections;
 
 class RowType {
 
@@ -139,8 +140,10 @@ class GameStateParser {
      * @return the requested card or null
      */
     protected static String getCardStringOrNull(Deck deck, int index){
-        // TODO: Write implementation
-        return null;
+        String cards = deck.toString().replace("[", "").replace("]", "");
+        String[] arrOfStr = cards.split(", ");
+        if (index < 1 || index > 52) { return null; }
+        return arrOfStr[index];
     }
 
     /**
@@ -152,6 +155,9 @@ class GameStateParser {
      * @param totalLength The total length that the String must become
      */
     protected static void padNAdd(StringBuilder builder, String string, int totalLength){
-        // TODO: Write implementation
+        builder.append(string);
+        if (string.length() == 1){ builder.insert(0, " "); }
+        int len = totalLength - builder.length();
+        for (int i = 0; i < len; i++){ builder.append(" "); }
     }
 }

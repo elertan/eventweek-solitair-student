@@ -1,6 +1,8 @@
 package nl.quintor.solitaire.models.deck;
 
 import nl.quintor.solitaire.models.card.Card;
+import nl.quintor.solitaire.models.card.Rank;
+import nl.quintor.solitaire.models.card.Suit;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,6 +56,13 @@ public final class Deck extends ArrayList<Card> {
      */
     public Deck(DeckType deckType){
         this.deckType = deckType;
+        if (deckType == DeckType.WASTE) {
+            // Shit code
+            var cards = IntStream.range(0, 23).mapToObj(Card::new).collect(Collectors.toCollection(Deck::new));
+            this.addAll(cards);
+        } else if (deckType == DeckType.STOCK) {
+            this.add(new Card(Suit.JOKER, Rank.JOKER_BLACK));
+        }
     }
 
     /**

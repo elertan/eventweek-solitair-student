@@ -1,15 +1,15 @@
 package nl.quintor.solitaire.models.state;
 
 import nl.quintor.solitaire.game.moves.RevertibleMove;
+import nl.quintor.solitaire.models.card.Card;
 import nl.quintor.solitaire.models.deck.Deck;
 import nl.quintor.solitaire.models.deck.DeckType;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Class that holds the complete state of the game, consisting of 1 stock, 7 columns and 4 stacks of {@link Deck}s, and
@@ -34,6 +34,26 @@ public final class GameState {
     private LocalDateTime endTime;
     private boolean gameLost = false;
     private boolean gameWon = false;
+
+    public GameState() {
+        Random r = new Random();
+
+        var stackKeysBase = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
+        stackKeysBase.stream().map(x -> "S" + x).forEach(x -> {
+            this.stackPiles.put(x, new Deck(DeckType.STACK));
+        });
+
+        var columnKeys = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G"));
+        IntStream.range(0, columnKeys.size())
+            .forEach(i -> {
+                var columnKey = columnKeys.get(i);
+
+                var deck = new Deck(DeckType.COLUMN);
+                deck.addAll(IntStream.range(0, i + 1).mapToObj(x -> new Card(r.nextInt(54))).collect(Collectors.toCollection(Deck::new)));
+                deck.setInvisibleCards(i);
+                this.columns.put(columnKey, deck);
+            });
+    }
 
     /**
      * Getter for waste deck.

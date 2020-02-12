@@ -1,13 +1,15 @@
 package nl.quintor.solitaire.game;
 
 import nl.quintor.solitaire.models.deck.Deck;
-import nl.quintor.solitaire.models.deck.DeckType;
 import nl.quintor.solitaire.models.state.GameState;
+
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 /**
  * Library class for GameState initiation and status checks that are called from {@link nl.quintor.solitaire.Main}.
@@ -24,7 +26,6 @@ public class GameStateController {
      * @return a new GameState object, ready to go
      */
     public static GameState init(){
-        // TODO: Write implementation
         return new GameState();
     }
 
@@ -35,7 +36,10 @@ public class GameStateController {
      * @param gameState GameState object that the score penalty is applied to
      */
     public static void applyTimePenalty(GameState gameState){
-        // TODO: Write implementation
+        var seconds = gameState.getEndTime().toEpochSecond(ZoneOffset.UTC) - gameState.getStartTime().toEpochSecond(ZoneOffset.UTC);
+
+        var timePenalty = seconds / 10 * -2;
+        gameState.setTimeScore(timePenalty);
     }
 
     /**
@@ -46,6 +50,10 @@ public class GameStateController {
      */
     public static void applyBonusScore(GameState gameState){
         // TODO: Write implementation
+      long seconds = java.time.Duration.between(gameState.getStartTime(), gameState.getEndTime()).getSeconds();
+      if(seconds > 30){
+          gameState.setTimeScore(700000/seconds);
+      }
     }
 
     /**
@@ -57,5 +65,11 @@ public class GameStateController {
      */
     public static void detectGameWin(GameState gameState){
         // TODO: Write implementation
+        boolean foundInvisibleCards = gameState.getColumns().values().stream().anyMatch(d -> (d.getInvisibleCards() > 0));
+
+        if(!foundInvisibleCards && gameState.getStock().isEmpty()){
+            gameState.setGameWon(true);
+        }
+
     }
 }
