@@ -1,6 +1,7 @@
 package nl.quintor.solitaire.game;
 
 import nl.quintor.solitaire.game.moves.Help;
+import nl.quintor.solitaire.game.moves.Move;
 import nl.quintor.solitaire.game.moves.ex.MoveException;
 import nl.quintor.solitaire.models.card.Card;
 import nl.quintor.solitaire.models.card.Rank;
@@ -89,6 +90,37 @@ public class CardMoveChecks {
      */
     public static void cardLevelChecks(Deck targetDeck, Card cardToAdd) throws MoveException {
         // TODO: Write implementation
+        if(targetDeck.getDeckType() == DeckType.STOCK) {
+            throw new MoveException("Target deck is neither Stack nor Column.");
+        } else if (targetDeck.getDeckType() == DeckType.STACK) {
+            if (targetDeck.isEmpty()) {
+                if (cardToAdd.getRank() != Rank.ACE){
+                    throw new MoveException("An Ace has to be the first card of a Stack Pile");
+                }
+            }
+            if(!targetDeck.isEmpty()){
+                if(targetDeck.get(0).getSuit() != cardToAdd.getSuit()){
+                    throw new MoveException("Stack Piles can only contain same-suit cards");
+                }
+                if(targetDeck.get(targetDeck.size()-1).getOrdinal() >= cardToAdd.getOrdinal()){
+                    throw new MoveException("Stack Piles hold same-suit cards of increasing Rank from Ace to King");
+                }
+            }
+
+        } else if(targetDeck.getDeckType() == DeckType.COLUMN){
+            if(targetDeck.isEmpty() && cardToAdd.getRank() != Rank.KING){
+                throw new MoveException("A King has to be the first card of a Column");
+            }
+            if(redSuit(targetDeck.get(targetDeck.size()-1)) == redSuit(cardToAdd)) {
+                throw new MoveException("Column cards have te alternate colors (red and black)");
+            }
+            if(redSuit(targetDeck.get(targetDeck.size()-1)) != redSuit(cardToAdd)){
+                if(targetDeck.get(targetDeck.size() -1).getOrdinal()-1 !=  cardToAdd.getOrdinal()){
+                    throw new MoveException("Columns hold alternating-color cards of decreasing rank from King to Two");
+                }
+            }
+        }
+        return;
     }
 
     // Helper methods
@@ -102,6 +134,9 @@ public class CardMoveChecks {
      */
     static void checkStackMove(Card targetCard, Card cardToAdd) throws MoveException {
         // TODO: Write implementation
+        if ((cardToAdd.getOrdinal() > targetCard.getOrdinal()) || targetCard == null){
+            return;
+        }
     }
 
     /**
@@ -113,6 +148,9 @@ public class CardMoveChecks {
      */
     static void checkColumnMove(Card targetCard, Card cardToAdd) throws MoveException {
         /// TODO: Write implementation
+        if ((cardToAdd.getOrdinal() > targetCard.getOrdinal()) || targetCard == null){
+            return;
+        }
     }
 
     /**
