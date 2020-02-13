@@ -1,15 +1,14 @@
 package nl.quintor.solitaire.ui.cli;
 
 import nl.quintor.solitaire.models.card.Card;
+import nl.quintor.solitaire.models.card.Suit;
 import nl.quintor.solitaire.models.deck.Deck;
 import nl.quintor.solitaire.models.state.GameState;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.Collections;
 
 class RowType {
 
@@ -34,6 +33,8 @@ class RowType {
     public boolean isCard() {
         return _card != null;
     }
+
+    public Card getCard() { return _card; }
 }
 
 /**
@@ -87,13 +88,11 @@ class GameStateParser {
      * @return did the row contain any cards
      */
     protected static boolean printRow(StringBuilder builder, Collection<Deck> columns, int row){
-        // TODO: Write implementation
-
         List<Integer> columnHeights = columns.stream().map(deck -> deck.size() + deck.getInvisibleCards()).collect(Collectors.toList());
 
         columnHeights.sort(Integer::compareTo);
 
-        int heighestColumn = columnHeights.get(columnHeights.size() - 1);
+        int heighestColumn = columnHeights.get(0);
         ArrayList<ArrayList<RowType>> rows = new ArrayList<ArrayList<RowType>>();
         IntStream.range(0,heighestColumn).forEach(i -> {
             ArrayList<RowType> newRow = new ArrayList<RowType>();
@@ -115,21 +114,31 @@ class GameStateParser {
             rows.add(newRow);
         });
 
-        rows.stream().forEach(singleRow -> {
-            singleRow.stream().forEach(rowType -> {
-                if (rowType.isNoCard()){
+        ArrayList<RowType> singleRow = rows.get(row);
 
-                } else if (rowType.isHidden()) {
-
-                } else if (rowType.isCard()) {
-
-                }
-
-            });
-//            TODO: new line '\n'
+        singleRow.stream().forEach(rowType -> {
+            try {
+                String cardString = getBetterCardStringOrNull(rowType);
+                builder.append(cardString + "    ");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
         return columns.stream().anyMatch(deck -> deck.size() > row);
+    }
+
+    protected static String getBetterCardStringOrNull(RowType rowType) throws Exception {
+        if (rowType.isNoCard()){
+            return "  ";
+        } else if (rowType.isHidden()) {
+            return "? ?";
+        } else if (rowType.isCard()) {
+            Card card = rowType.getCard();
+            return card.toShortString();
+        }
+
+        throw new Exception();
     }
 
     /**
