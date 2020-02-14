@@ -83,7 +83,7 @@ public class CardMoveChecks {
         }
         else if( destinationDeck.getDeckType() == DeckType.STOCK){
             throw new MoveException("You can\'t move cards to the stock");
-        }else if (sourceDeck.size() != sourceCardIndex && sourceDeck.getInvisibleCards() == 0) {
+        }else if (sourceDeck.size() - sourceCardIndex > 1 && sourceDeck.getInvisibleCards() == 0 && destinationDeck.getDeckType() == DeckType.STACK) {
         throw new MoveException("You can't move more than 1 card at a time to a Stack Pile");
         }else if (sourceDeck.getInvisibleCards() > sourceCardIndex){
             throw new MoveException("You can't move an invisible card");
@@ -101,7 +101,28 @@ public class CardMoveChecks {
      * @throws MoveException on illegal move
      */
     public static void cardLevelChecks(Deck targetDeck, Card cardToAdd) throws MoveException {
-        // TODO: Write implementation
+
+
+        if(targetDeck.getDeckType() == DeckType.STACK){
+            if(targetDeck.size() == 0 && cardToAdd.getRank() != Rank.ACE){
+                throw new MoveException("An Ace has to be the first card of a Stack Pile");
+            }
+            if(targetDeck.size() > 0){
+            var targetCard = targetDeck.get(targetDeck.size()-1);
+            checkStackMove(targetCard, cardToAdd);
+            }
+//            else{ targetDeck.add(cardToAdd);}
+
+        }else if (targetDeck.getDeckType() == DeckType.COLUMN){
+            if(targetDeck.size() == 0 && cardToAdd.getRank() != Rank.KING){
+                throw new MoveException("A King has to be the first card of a Column");
+            } if(targetDeck.size() > 0){
+            var targetCard = targetDeck.get(targetDeck.size()-1);
+            checkColumnMove(targetCard, cardToAdd);}
+//            else{ targetDeck.add(cardToAdd);}
+        }else{
+            throw new MoveException("Target deck is neither Stack nor Column.");
+        }
     }
 
     // Helper methods
@@ -114,8 +135,19 @@ public class CardMoveChecks {
      * @throws MoveException on illegal move
      */
     static void checkStackMove(Card targetCard, Card cardToAdd) throws MoveException {
-        // TODO: Write implementation
+
+        if (targetCard.getSuit() != cardToAdd.getSuit()) {
+            throw new MoveException("Stack Piles can only contain same-suit cards");
+        } else if(cardToAdd.getRank().ordinal() - targetCard.getRank().ordinal() == -12){
+
+        }
+        else if (cardToAdd.getRank().ordinal() - targetCard.getRank().ordinal() != 1){
+                throw new MoveException("Stack Piles hold same-suit cards of increasing Rank from Ace to King");
+            }
+
     }
+
+
 
     /**
      * Verifies that the proposed move is legal given that the targetCard is the last card of a column.
@@ -125,7 +157,18 @@ public class CardMoveChecks {
      * @throws MoveException on illegal move
      */
     static void checkColumnMove(Card targetCard, Card cardToAdd) throws MoveException {
-        /// TODO: Write implementation
+        if(targetCard.getSuit() == cardToAdd.getSuit()
+            || targetCard.getSuit() == Suit.DIAMONDS && cardToAdd.getSuit() == Suit.HEARTS
+            || targetCard.getSuit() == Suit.SPADES && cardToAdd.getSuit() == Suit.CLUBS
+            || targetCard.getSuit() == Suit.HEARTS && cardToAdd.getSuit() == Suit.DIAMONDS
+            || targetCard.getSuit() == Suit.CLUBS && cardToAdd.getSuit() == Suit.SPADES){
+            throw new MoveException("Column cards have te alternate colors (red and black)");
+        }else{
+            if(cardToAdd.getRank().ordinal() >= targetCard.getRank().ordinal() ){
+                throw new MoveException("Columns hold alternating-color cards of decreasing rank from King to Two");
+            }
+        }
+
     }
 
     /**
