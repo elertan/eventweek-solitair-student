@@ -66,10 +66,7 @@ public class GameStateController {
     public static void detectGameWin(GameState gameState){
         // TODO: Write implementation
         boolean foundInvisibleCards = gameState.getColumns().values().stream().anyMatch(d -> (d.getInvisibleCards() > 0));
-
-        if(!foundInvisibleCards && gameState.getStock().isEmpty()){
-            gameState.setGameWon(true);
-        }
+        gameState.setGameWon(!foundInvisibleCards && gameState.getStock().isEmpty() && gameState.getWaste().isEmpty());
 
     }
 }
